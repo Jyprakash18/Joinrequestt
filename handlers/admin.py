@@ -78,3 +78,27 @@ async def setpost_handler(message: Message):
     )
 
     await message.answer("✅ Is channel ke liye post set ho gaya.")
+@router.message(Command("setpost"))
+async def setpost_handler(message: Message):
+    if not is_admin(message.from_user.id):
+        return await message.answer("❌ Admin only.")
+
+    if not message.reply_to_message:
+        return await message.answer(
+            "Post par reply karke command do:\n"
+            "/setpost -100xxxxxxxxxx"
+        )
+
+    parts = message.text.split()
+    if len(parts) < 2:
+        return await message.answer("Channel ID missing.")
+
+    channel_id = int(parts[1])
+
+    await save_latest_post(
+        channel_id=channel_id,
+        from_chat_id=message.chat.id,
+        message_id=message.reply_to_message.message_id
+    )
+
+    await message.answer("✅ Post set ho gaya.")
