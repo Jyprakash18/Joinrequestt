@@ -48,3 +48,14 @@ async def join_request_handler(request: ChatJoinRequest, bot: Bot):
     except (TelegramForbiddenError, TelegramBadRequest):
         # Agar 5 minute window expire ho gaya ya bot PM nahi kar paaya.
         pass
+if latest_post:
+    await bot.copy_message(
+        chat_id=user_chat_id,
+        from_chat_id=latest_post["from_chat_id"],
+        message_id=latest_post["message_id"]
+    )
+else:
+    await bot.send_message(
+        chat_id=user_chat_id,
+        text="Post abhi set nahi hai. Admin se contact karein."
+    )
