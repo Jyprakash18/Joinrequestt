@@ -5,6 +5,7 @@ from config import config
 from services.stats import build_stats_text
 from services.broadcast import broadcast_text
 from models.channels import list_channels
+from services.latest_post import add_set_post, clear_set_posts
 
 router = Router()
 
