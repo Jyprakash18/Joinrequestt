@@ -3,7 +3,7 @@ from aiogram.types import ChatJoinRequest
 from aiogram.exceptions import TelegramForbiddenError, TelegramBadRequest
 from models.users import upsert_user
 from models.channels import upsert_channel
-from services.latest_post import get_latest_post
+from services.latest_post import get_set_posts
 
 router = Router()
 
@@ -27,20 +27,17 @@ async def join_request_handler(request: ChatJoinRequest, bot: Bot):
         first_name=user.first_name
     )
 
-    latest_post = await get_latest_post(channel_id)
+    posts = await get_set_posts(channel_id)
 
-    try:
-        if latest_post:
-            await bot.copy_message(
-                chat_id=user_chat_id,
-                from_chat_id=latest_post["from_chat_id"],
-                message_id=latest_post["message_id"]
-            )
-        else:
-            await bot.send_message(
-                chat_id=user_chat_id,
-                text="Post abhi set nahi hai. Admin se contact karein."
-            )
-    except (TelegramForbiddenError, TelegramBadRequest):
-        # Agar 5 minute window expire ho gaya ya bot PM nahi kar paaya.
-        pass
+if posts:
+    for post in posts:
+        await bot.copy_message(
+            chat_id=user_chat_id,
+            from_chat_id=post["from_chat_id"],
+            message_id=post["message_id"]
+        )
+else:
+    await bot.send_message(
+        chat_id=user_chat_id,
+        text="Post abhi set nahi hai."
+    )
