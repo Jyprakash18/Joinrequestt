@@ -29,15 +29,20 @@ async def join_request_handler(request: ChatJoinRequest, bot: Bot):
 
     posts = await get_set_posts(channel_id)
 
-if posts:
-    for post in posts:
-        await bot.copy_message(
-            chat_id=user_chat_id,
-            from_chat_id=post["from_chat_id"],
-            message_id=post["message_id"]
-        )
-else:
-    await bot.send_message(
-        chat_id=user_chat_id,
-        text="Post abhi set nahi hai."
-    )
+    # Yeh hissa ab function ke andar hai (indented properly)
+    try:
+        if posts:
+            for post in posts:
+                await bot.copy_message(
+                    chat_id=user_chat_id,
+                    from_chat_id=post["from_chat_id"],
+                    message_id=post["message_id"]
+                )
+        else:
+            await bot.send_message(
+                chat_id=user_chat_id,
+                text="Post abhi set nahi hai."
+            )
+    except (TelegramForbiddenError, TelegramBadRequest):
+        # Agar user bot ko block kar de ya window expire ho jaye, toh bot crash nahi hoga
+        pass
