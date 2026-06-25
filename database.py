@@ -40,6 +40,17 @@ async def init_db():
         )
         """)
 
+        await db.execute("""
+CREATE TABLE IF NOT EXISTS set_posts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    channel_id INTEGER NOT NULL,
+    from_chat_id INTEGER NOT NULL,
+    message_id INTEGER NOT NULL,
+    position INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+)
+""")
+        
         await db.commit()
 
 async def execute(query: str, params: tuple = ()):
