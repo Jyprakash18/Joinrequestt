@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.types import Message
 from config import config
 from models.channels import upsert_channel
-from services.latest_post import save_latest_post
+from services.latest_post import add_set_post
 
 router = Router()
 
@@ -17,7 +17,7 @@ async def channel_post_handler(message: Message):
     )
 
     # Latest post save.
-    await save_latest_post(
+    await add_set_post(
         channel_id=message.chat.id,
         from_chat_id=message.chat.id,
         message_id=message.message_id
